@@ -1,0 +1,46 @@
+// ===== PIN CONFIGURATION =====
+const int RED_PIN = 12;
+const int GREEN_PIN = 10;
+
+// ===== EMERGENCY CONTROL =====
+unsigned long lastSignalTime = 0;
+const unsigned long EMERGENCY_DURATION = 10000; // 10 seconds
+bool emergencyActive = false;
+
+void setup() {
+  pinMode(RED_PIN, OUTPUT);
+  pinMode(GREEN_PIN, OUTPUT);
+
+  // SAFE DEFAULT STATE
+  digitalWrite(RED_PIN, HIGH);   // RED ON
+  digitalWrite(GREEN_PIN, LOW);  // GREEN OFF
+
+  Serial.begin(9600);
+}
+
+void loop() {
+  // ---- READ SERIAL INPUT SAFELY ----
+  while (Serial.available() > 0) {
+    char cmd = Serial.read();
+    if (cmd == 'G') {
+      lastSignalTime = millis();
+      emergencyActive = true;   // LATCH EMERGENCY
+    }
+  }
+
+  // ---- EMERGENCY LOGIC ----
+  if (emergencyActive) {
+    digitalWrite(RED_PIN, LOW);
+    digitalWrite(GREEN_PIN, HIGH);
+
+    // Auto-reset after timeout
+    if (millis() - lastSignalTime > EMERGENCY_DURATION) {
+      emergencyActive = false;
+    }
+  } 
+  else {
+    // ---- NORMAL MODE ----
+    digitalWrite(RED_PIN, HIGH);
+    digitalWrite(GREEN_PIN, LOW);
+  }
+}

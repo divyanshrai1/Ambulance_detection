@@ -1,0 +1,13 @@
+train: C:/Users/bhumi/ambulance_detector/dataset/train/images
+val: C:/Users/bhumi/ambulance_detector/dataset/train/images
+
+nc: 1
+names: ['ambulance']
+
+
+roboflow:
+  workspace: ambulance-g96lp
+  project: ambulance-gp1tc
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/ambulance-g96lp/ambulance-gp1tc/dataset/1
